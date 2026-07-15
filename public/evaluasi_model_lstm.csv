@@ -1,0 +1,6 @@
+metric,value
+MAE,8.23
+RMSE,10.1
+MAPE,2.62
+Accuracy,97.38
+R2 Score,0.9063
