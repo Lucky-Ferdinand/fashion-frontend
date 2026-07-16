@@ -15,9 +15,9 @@ import {
 } from "recharts";
 
 // =========================================================================
-// API SERVICES[cite: 22]
+// API SERVICES
 // =========================================================================
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 const getCategories = async () => {
   const { data } = await axios.get(`${API_BASE}/categories`);
@@ -36,7 +36,7 @@ const getModelPerformance = async () => {
 
 
 // =========================================================================
-// KOMPONEN: AgentCard[cite: 14]
+// KOMPONEN: AgentCard
 // =========================================================================
 function AgentCard({ title, action }) {
   const getIcon = () => {
@@ -68,7 +68,7 @@ function AgentCard({ title, action }) {
 
 
 // =========================================================================
-// KOMPONEN: CategoryGrid[cite: 15]
+// KOMPONEN: CategoryGrid
 // =========================================================================
 const categoryIcons = {
   dress: <GiAmpleDress size={34} />,
@@ -115,7 +115,7 @@ function CategoryGrid({ categories, selectedCategory, onSelect }) {
 
 
 // =========================================================================
-// KOMPONEN: TrendBadge[cite: 20]
+// KOMPONEN: TrendBadge
 // =========================================================================
 function TrendBadge({ trend }) {
   const config = {
@@ -133,7 +133,7 @@ function TrendBadge({ trend }) {
 
 
 // =========================================================================
-// KOMPONEN: ForecastResult[cite: 16]
+// KOMPONEN: ForecastResult
 // =========================================================================
 function ForecastResult({ result, loading }) {
   if (loading) {
@@ -145,7 +145,7 @@ function ForecastResult({ result, loading }) {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="border border-gray-200 rounded-xl p-5"><div className="h-4 w-28 bg-gray-200 rounded mb-5"></div><div className="h-10 w-20 bg-gray-200 rounded"></div></div>
-          <div className="rounded-xl p-5 bg-red-100"><div className="h-4 w-32 bg-red-200 rounded mb-5"></div><div className="h-10 w-20 bg-red-200 rounded"></div></div>
+          <div className="rounded-xl p-5 bg-red-100"><div className="h-4 w-32 bg-red-200 rounded mb-5"></div><div className="h-10 w-20 bg-gray-200 rounded"></div></div>
         </div>
       </div>
     );
@@ -193,7 +193,7 @@ function ForecastResult({ result, loading }) {
 
 
 // =========================================================================
-// KOMPONEN: ForecastTimelineChart[cite: 17]
+// KOMPONEN: ForecastTimelineChart
 // =========================================================================
 function ForecastTimelineChart({ historical, forecast }) {
   if (!historical || !forecast) return null;
@@ -286,7 +286,7 @@ function ForecastTimelineChart({ historical, forecast }) {
 
 
 // =========================================================================
-// KOMPONEN: ModelMetrics[cite: 18]
+// KOMPONEN: ModelMetrics
 // =========================================================================
 function ModelMetrics({ performance }) {
   if (!performance) return null;
@@ -317,7 +317,7 @@ function ModelMetrics({ performance }) {
 
 
 // =========================================================================
-// KOMPONEN: ModelPerformanceChart[cite: 19]
+// KOMPONEN: ModelPerformanceChart
 // =========================================================================
 function ModelPerformanceChart({ data }) {
   if (!data) return null;
@@ -351,7 +351,7 @@ function ModelPerformanceChart({ data }) {
 
 
 // =========================================================================
-// KOMPONEN UTAMA: RatingProduk (Diadaptasi dari Dashboard[cite: 21])
+// KOMPONEN UTAMA: RatingProduk
 // =========================================================================
 export default function RatingProduk() {
   const [categories, setCategories] = useState([]);
@@ -368,10 +368,9 @@ export default function RatingProduk() {
   const loadCategories = async () => {
     try {
       const data = await getCategories();
-      setCategories(data.categories || data); // Fleksibel menerima format array langsung atau objek
+      setCategories(data.categories || data);
     } catch (err) {
       console.error(err);
-      // Dummy data jika backend belum siap agar UI tetap bisa dilihat
       setCategories(["dress", "shirt", "shoes", "socks", "pants", "bag", "jacket", "outfit", "skirt"]);
     }
   };
