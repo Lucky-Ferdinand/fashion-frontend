@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+// Mengambil URL backend dari environment variable Vercel, fallback ke localhost jika dijalankan secara lokal
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 function Klasifikasi() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -29,8 +32,8 @@ function Klasifikasi() {
     formData.append("file", selectedFile);
 
     try {
-      // Memanggil endpoint backend terpadu port 8000 /recommend
-      const response = await axios.post('http://localhost:8000/recommend', formData);
+      // Memanggil endpoint backend terpadu menggunakan variabel API_BASE yang dinamis
+      const response = await axios.post(`${API_BASE}/recommend`, formData);
       
       if (response.data && response.data.data && response.data.data.length > 0) {
         const results = response.data.data;
@@ -47,7 +50,7 @@ function Klasifikasi() {
       }
     } catch (error) {
       console.error("Error AI:", error);
-      alert("Gagal terhubung ke AI. Pastikan server master terpadu berjalan di port 8000.");
+      alert(`Gagal terhubung ke AI. Pastikan server aktif di ${API_BASE}`);
     }
     setLoading(false);
   };
@@ -114,11 +117,10 @@ function Klasifikasi() {
               <div key={idx} className="flex flex-col">
                 <div className="border-2 border-gray-400 rounded-3xl overflow-hidden aspect-[4/5] mb-4">
                   <img 
-                    // PERUBAHAN DISINI: Mengambil langsung dari image_url
                     src={item.image_url} 
                     className="w-full h-full object-cover" 
                     alt={item.title} 
-                    loading="lazy" // Tambahan agar loading lebih ringan
+                    loading="lazy"
                     onError={(e) => { e.target.src = 'https://placehold.co/400x500?text=Gambar+Tidak+Tersedia'; }}
                   />
                 </div>
