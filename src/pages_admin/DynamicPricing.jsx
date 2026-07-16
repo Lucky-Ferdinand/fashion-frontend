@@ -9,11 +9,14 @@ import {
   YAxis,
   Tooltip,
   Legend,
-} from "recharts"; //
+} from "recharts";
+
+// Mengambil URL backend dari environment variable Vercel, fallback ke localhost jika lokal
+const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 const DynamicPricing = () => {
-  const [loading, setLoading] = useState(false); //
-  const [result, setResult] = useState(null); //
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
 
   // Default state input produk
   const [formData, setFormData] = useState({
@@ -45,28 +48,28 @@ const DynamicPricing = () => {
       ...formData,
       [e.target.name]:
         e.target.type === "number" ? Number(e.target.value) : e.target.value,
-    }); //
+    });
   };
 
   const handleHistoryChange = (index, field, value) => {
-    const updated = [...history]; //
-    updated[index][field] = value; //
-    setHistory(updated); //
+    const updated = [...history];
+    updated[index][field] = value;
+    setHistory(updated);
   };
 
   const handlePredict = async () => {
     try {
-      setLoading(true); //
-      const payload = { ...formData, history }; //
+      setLoading(true);
+      const payload = { ...formData, history };
 
-      // Disesuaikan ke rute /predict-demand agar tidak bentrok dengan /predict milik rating
-      const response = await axios.post("http://127.0.0.1:8000/predict-demand", payload); //
-      setResult(response.data); //
+      // Menggunakan API_BASE agar terhubung ke Railway saat online
+      const response = await axios.post(`${API_BASE}/predict-demand`, payload);
+      setResult(response.data);
     } catch (error) {
-      console.error(error); //
-      alert("Gagal melakukan prediksi. Pastikan backend_dynamic/main_unified berjalan di port 8000.");
+      console.error(error);
+      alert(`Gagal melakukan prediksi. Pastikan server aktif di ${API_BASE}`);
     } finally {
-      setLoading(false); //
+      setLoading(false);
     }
   };
 
@@ -80,7 +83,7 @@ const DynamicPricing = () => {
           month: item.month,
           predicted: item.predicted_demand,
         })),
-      ] //
+      ]
     : [];
 
   return (
